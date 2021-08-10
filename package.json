@@ -1,8 +1,8 @@
 {
-  "name": "FingerTwister",
+  "name": "fingertwister",
   "version": "1.0.0",
   "description": "play the demo at https://timsoenksen.github.io/FingerTwister/",
-  "main": "game.js",
+  "main": ".eslintrc.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,13 +18,19 @@
   },
   "homepage": "https://github.com/TimSoenksen/FingerTwister#readme",
   "devDependencies": {
-    "@babel/core": "^7.15.0",
     "@babel/eslint-parser": "^7.15.0",
+    "babel-eslint": "^10.1.0",
     "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
     "eslint-config-node": "^4.1.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "prettier": "^2.3.2"
   }
 }

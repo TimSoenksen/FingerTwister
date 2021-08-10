@@ -1,6 +1,5 @@
 body {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  background: #fff;
 }
 
 #headline,
@@ -11,6 +10,16 @@ body {
   margin-left: auto;
   margin-right: auto;
   display: block;
+}
+
+#spinButton {
+  background-color: #079e28;
+  border: none;
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+  padding: 16px;
+  border-radius: 25px;
 }
 
 .circle {
