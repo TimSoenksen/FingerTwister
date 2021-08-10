@@ -45,9 +45,7 @@ var dots = [
 function init() {
   window.addEventListener('keydown', (event) => {
     //highlight when button is pressed down
-    document
-      .getElementById(event.key)
-      .setAttribute('style', 'border: 5px solid black; opacity: 100%');
+    document.getElementById(event.key).setAttribute('style', 'border: 5px solid black; opacity: 100%');
 
     //stop if this key is already pressed down
     if (!curKeysPressed.includes(event.key)) {
@@ -60,9 +58,7 @@ function init() {
 
   window.addEventListener('keyup', (event) => {
     //remove highlight when button is let go
-    document
-      .getElementById(event.key)
-      .setAttribute('style', 'border: 5px solid grey; opacity: 70%;');
+    document.getElementById(event.key).setAttribute('style', 'border: 5px solid grey; opacity: 70%;');
 
     verifyKeyUp(event);
 
@@ -239,9 +235,7 @@ function reset() {
   document.getElementById('output').innerHTML = 'Click "Spin!" to start!';
 
   dots.forEach((element) => {
-    document
-      .getElementById(element.key)
-      .setAttribute('style', 'border: 5px solid grey; opacity: 70%;');
+    document.getElementById(element.key).setAttribute('style', 'border: 5px solid grey; opacity: 70%;');
   });
 
   //reset values
