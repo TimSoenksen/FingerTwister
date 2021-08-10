@@ -7,7 +7,6 @@ var randColor = 'none';
 var randFinger = 'none';
 
 var curKeysPressed = [];
-var curColorsPressed = [];
 var curFingersActive = [];
 
 var score = 0;
@@ -16,13 +15,11 @@ var numReds = 0;
 var numBlues = 0;
 var numYellows = 0;
 var numGreens = 0;
-var numTotal = 0;
 
 var fingerNames = ['index', 'middle', 'ring', 'pinky'];
 var colors = ['red', 'blue', 'yellow', 'green'];
 
 var currentFinger = 'none'; //current finger being moved
-var keyPressed = 'none'; //current key being pressed
 
 var dots = [
   //first row
@@ -250,16 +247,15 @@ function reset() {
   randColor = 'none';
   randFinger = 'none';
   curKeysPressed = [];
-  curColorsPressed = [];
+
   curFingersActive = [];
   score = 0;
   numReds = 0;
   numBlues = 0;
   numYellows = 0;
   numGreens = 0;
-  numTotal = 0;
+
   currentFinger = 'none'; //current finger being moved
-  keyPressed = 'none'; //current key being pressed
 }
 
 function gameOver(penaltyMessage) {
@@ -271,10 +267,4 @@ function findColor(array, key) {
   return array.find(function (o) {
     return o.key === key;
   }).color;
-}
-
-function findFinger(array, key) {
-  return array.find(function (o) {
-    return o.key === key;
-  }).finger;
 }
