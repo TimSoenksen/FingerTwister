@@ -1,3 +1,4 @@
+//initialize when dom content is loaded.
 document.addEventListener('DOMContentLoaded', init);
 
 //VARIABLES
@@ -15,6 +16,8 @@ var numReds = 0;
 var numBlues = 0;
 var numYellows = 0;
 var numGreens = 0;
+
+var oldColor = 'none';
 
 var fingerNames = ['index', 'middle', 'ring', 'pinky'];
 var colors = ['red', 'blue', 'yellow', 'green'];
@@ -61,6 +64,8 @@ function init() {
       .getElementById(event.key)
       .setAttribute('style', 'border: 5px solid grey; opacity: 70%;');
 
+    verifyKeyUp(event);
+
     //remove the current key from the list of keys being pressed
     var indexOfKey = curKeysPressed.indexOf(event.key);
     curKeysPressed.splice(indexOfKey, 1);
@@ -70,75 +75,51 @@ function init() {
   document.getElementById('spinButton').addEventListener('click', spin);
 }
 
+//check to see if the color of the key moved up is not currently the color of the game that's supposed to be moved
+function verifyKeyUp(event) {
+  let colorSearched = findColor(dots, event.key);
+  if (colorSearched != oldColor) {
+    gameOver('you let go of a color that was not supposed to be let go yet!');
+  }
+}
+
 //check to see if the color matches with the random spin, basically if the correct color has been pressed down
 function verifyKeyDown(event) {
   let colorSearched = findColor(dots, event.key);
   if (colorSearched === randColor) {
     score = numSpins;
-    console.log(score);
+
     let recordFinger = dots.find(function (o) {
       return o.key === event.key;
     });
     recordFinger.finger = currentFinger;
     //now check if the number of that color searched is actually matching how many is supposed to be pressed
-    let tempColor = dots.filter(
-      (dot) => dot.finger != 'none' && dot.color === colorSearched,
-    );
+    let tempColor = dots.filter((dot) => dot.finger != 'none' && dot.color === colorSearched);
 
     switch (colorSearched) {
       case 'red':
         if (tempColor.length != numReds) {
-          gameOver(
-            'hey, we have the wrong number of ' + colorSearched + ' pressed!',
-          );
-          console.log(
-            tempColor.length +
-              '<- length of tempcolor ' +
-              numReds +
-              '<- num color',
-          );
+          gameOver('hey, we have the wrong number of ' + colorSearched + ' pressed!');
+          console.log(tempColor.length + '<- length of tempcolor ' + numReds + '<- num color');
         }
         break;
       case 'blue':
         if (tempColor.length != numBlues) {
-          gameOver(
-            'hey, we have the wrong number of ' + colorSearched + ' pressed!',
-          );
-          console.log(
-            tempColor.length +
-              '<- length of tempcolor ' +
-              numBlues +
-              '<- num color',
-          );
+          gameOver('hey, we have the wrong number of ' + colorSearched + ' pressed!');
+          console.log(tempColor.length + '<- length of tempcolor ' + numBlues + '<- num color');
         }
         break;
       case 'yellow':
         if (tempColor.length != numYellows) {
-          gameOver(
-            'hey, we have the wrong number of ' + colorSearched + ' pressed!',
-          );
-          console.log(
-            tempColor.length +
-              '<- length of tempcolor ' +
-              numYellows +
-              '<- num color',
-          );
+          gameOver('hey, we have the wrong number of ' + colorSearched + ' pressed!');
+          console.log(tempColor.length + '<- length of tempcolor ' + numYellows + '<- num color');
         }
         break;
       case 'green':
         if (tempColor.length != numGreens) {
-          gameOver(
-            'hey, we have the wrong number of ' + colorSearched + ' pressed!',
-          );
-          console.log(
-            tempColor.length +
-              '<- length of tempcolor ' +
-              numGreens +
-              '<- num color',
-          );
+          gameOver('hey, we have the wrong number of ' + colorSearched + ' pressed!');
+          console.log(tempColor.length + '<- length of tempcolor ' + numGreens + '<- num color');
         }
-        break;
-      default:
         break;
     }
   } else {
@@ -154,6 +135,7 @@ function spin() {
 
   //generate random index of finger to color
   var randomFingerIndex = Math.floor(Math.random() * 4);
+
   var randomColorIndex = Math.floor(Math.random() * 4);
 
   //set the random color and finger
@@ -161,6 +143,42 @@ function spin() {
   randFinger = fingerNames[randomFingerIndex];
 
   currentFinger = randFinger;
+
+  //make sure there can't be 4 of the same color, if so choose another color
+  switch (randColor) {
+    case 'red':
+      if (numReds === 3) {
+        while (randomColorIndex != 0) {
+          randomColorIndex = Math.floor(Math.random() * 4);
+        }
+      }
+      randColor = colors[randomColorIndex];
+      break;
+    case 'green':
+      if (numGreens === 3) {
+        while (randomColorIndex != 3) {
+          randomColorIndex = Math.floor(Math.random() * 4);
+        }
+      }
+      randColor = colors[randomColorIndex];
+      break;
+    case 'yellow':
+      if (numYellows === 3) {
+        while (randomColorIndex != 2) {
+          randomColorIndex = Math.floor(Math.random() * 4);
+        }
+      }
+      randColor = colors[randomColorIndex];
+      break;
+    case 'blue':
+      if (numBlues === 3) {
+        while (randomColorIndex != 1) {
+          randomColorIndex = Math.floor(Math.random() * 4);
+        }
+      }
+      randColor = colors[randomColorIndex];
+      break;
+  }
 
   //add color count
   switch (randColor) {
@@ -180,11 +198,15 @@ function spin() {
 
   //if the finger is already active, figure out where and reset
   if (curFingersActive.includes(randFinger)) {
-    console.log('finger already active in list');
     let obj = dots.find(function (o) {
       return o.finger === randFinger;
     });
+
+    oldColor = findColor(dots, obj.key);
+    console.log('old key was color ' + oldColor);
+
     obj.finger = 'none'; //reset
+
     //depending on where the finger was at before, remove the color count expected
     switch (obj.color) {
       case 'red':
@@ -198,8 +220,6 @@ function spin() {
         break;
       case 'green':
         numGreens--;
-        break;
-      default:
         break;
     }
   }
