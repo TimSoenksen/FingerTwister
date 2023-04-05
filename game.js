@@ -1,27 +1,27 @@
 document.addEventListener('DOMContentLoaded', init);
 
 //VARIABLES
-var numSpins = 0;
+let numSpins = 0;
 
-var randColor = 'none';
-var randFinger = 'none';
+let randColor = 'none';
+let randFinger = 'none';
 
-var curKeysPressed = [];
-var curFingersActive = [];
+let curKeysPressed = [];
+let curFingersActive = [];
 
-var score = 0;
+let score = 0;
 
-var numReds = 0;
-var numBlues = 0;
-var numYellows = 0;
-var numGreens = 0;
+let numReds = 0;
+let numBlues = 0;
+let numYellows = 0;
+let numGreens = 0;
 
-var fingerNames = ['index', 'middle', 'ring', 'pinky'];
-var colors = ['red', 'blue', 'yellow', 'green'];
+const fingerNames = ['index', 'middle', 'ring', 'pinky'];
+const colors = ['red', 'blue', 'yellow', 'green'];
 
-var currentFinger = 'none'; //current finger being moved
+let currentFinger = 'none'; //current finger being moved
 
-var dots = [
+const dots = [
     //first row
     { key: 'q', color: 'red', finger: 'none' },
     { key: 'w', color: 'blue', finger: 'none' },
@@ -62,8 +62,7 @@ function init() {
             .setAttribute('style', 'border: 5px solid grey; opacity: 70%;');
 
         //remove the current key from the list of keys being pressed
-        var indexOfKey = curKeysPressed.indexOf(event.key);
-        curKeysPressed.splice(indexOfKey, 1);
+        curKeysPressed.splice(curKeysPressed.indexOf(event.key), 1);
     });
 
     //create spin function
@@ -74,8 +73,6 @@ function init() {
 function verifyKeyDown(event) {
     let colorSearched = findColor(dots, event.key);
     if (colorSearched === randColor) {
-        score = numSpins;
-        console.log(score);
         let recordFinger = dots.find(function (o) {
             return o.key === event.key;
         });
@@ -99,6 +96,8 @@ function verifyKeyDown(event) {
                             numReds +
                             '<- num color',
                     );
+                } else {
+                    score = numSpins;
                 }
                 break;
             case 'blue':
@@ -114,6 +113,8 @@ function verifyKeyDown(event) {
                             numBlues +
                             '<- num color',
                     );
+                } else {
+                    score = numSpins;
                 }
                 break;
             case 'yellow':
@@ -129,6 +130,8 @@ function verifyKeyDown(event) {
                             numYellows +
                             '<- num color',
                     );
+                } else {
+                    score = numSpins;
                 }
                 break;
             case 'green':
@@ -144,6 +147,8 @@ function verifyKeyDown(event) {
                             numGreens +
                             '<- num color',
                     );
+                } else {
+                    score = numSpins;
                 }
                 break;
         }
@@ -153,6 +158,24 @@ function verifyKeyDown(event) {
 
     //record the key as pressed
     curKeysPressed.push(event.key);
+}
+
+
+function updateColorCount(color, increment) {
+    switch (color) {
+        case 'red':
+            numReds += increment;
+            break;
+        case 'blue':
+            numBlues += increment;
+            break;
+        case 'yellow':
+            numYellows += increment;
+            break;
+        case 'green':
+            numGreens += increment;
+            break;
+    }
 }
 
 function spin() {
@@ -170,22 +193,6 @@ function spin() {
 
     currentFinger = randFinger;
 
-    //add color count
-    switch (randColor) {
-        case 'red':
-            numReds++;
-            break;
-        case 'green':
-            numGreens++;
-            break;
-        case 'yellow':
-            numYellows++;
-            break;
-        case 'blue':
-            numBlues++;
-            break;
-    }
-
     //if the finger is already active, figure out where and reset
     if (curFingersActive.includes(randFinger)) {
         console.log('finger already active in list');
@@ -194,28 +201,16 @@ function spin() {
         });
         obj.finger = 'none'; //reset
         //depending on where the finger was at before, remove the color count expected
-        switch (obj.color) {
-            case 'red':
-                numReds--;
-                break;
-            case 'blue':
-                numBlues--;
-                break;
-            case 'yellow':
-                numYellows--;
-                break;
-            case 'green':
-                numGreens--;
-                break;
-            default:
-                break;
-        }
+        updateColorCount(obj.color, -1);
     }
 
     //append current finger to list of fingers active if not already there
     if (!curFingersActive.includes(randFinger)) {
         curFingersActive.push(randFinger);
     }
+
+    //add color count
+    updateColorCount(randColor, 1);
 
     //output results
     document.getElementById('output').innerHTML = randFinger + ' ' + randColor;
@@ -245,23 +240,9 @@ function reset() {
     });
 
     //reset values
-    dots = [
-        //first row
-        { key: 'q', color: 'red', finger: 'none' },
-        { key: 'w', color: 'blue', finger: 'none' },
-        { key: 'e', color: 'yellow', finger: 'none' },
-        { key: 'r', color: 'green', finger: 'none' },
-        //second row
-        { key: 'a', color: 'red', finger: 'none' },
-        { key: 's', color: 'blue', finger: 'none' },
-        { key: 'd', color: 'yellow', finger: 'none' },
-        { key: 'f', color: 'green', finger: 'none' },
-        //third row
-        { key: 'z', color: 'red', finger: 'none' },
-        { key: 'x', color: 'blue', finger: 'none' },
-        { key: 'c', color: 'yellow', finger: 'none' },
-        { key: 'v', color: 'green', finger: 'none' },
-    ];
+    dots.forEach((dot) => {
+        dot.finger = 'none';
+    });
 
     numSpins = 0;
     randColor = 'none';
@@ -278,9 +259,13 @@ function reset() {
     currentFinger = 'none'; //current finger being moved
 }
 
+
+
 function gameOver(penaltyMessage) {
     alert(penaltyMessage + '\nScore: ' + score);
-    reset();
+    setTimeout(() => {
+        reset();
+    }, 0);
 }
 
 function findColor(array, key) {
